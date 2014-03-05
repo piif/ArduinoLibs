@@ -29,6 +29,8 @@
 */
 
 #include "MsTimer2.h"
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
 unsigned long MsTimer2::msecs;
 void (*MsTimer2::func)();

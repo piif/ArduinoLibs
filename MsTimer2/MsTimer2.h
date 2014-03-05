@@ -1,8 +1,6 @@
 #ifndef MsTimer2_h
 #define MsTimer2_h
 
-#include <avr/interrupt.h>
-
 namespace MsTimer2 {
 	extern unsigned long msecs;
 	extern void (*func)();
