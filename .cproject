@@ -57,6 +57,9 @@
 						</toolChain>
 					</folderInfo>
 					<fileInfo id="de.innot.avreclipse.configuration.lib.release.985260026.852281844.469831181" name="aJSON.h" rcbsApplicability="disable" resourcePath="aJson_master/aJSON.h" toolsToInvoke=""/>
+					<sourceEntries>
+						<entry excluding="**/examples" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
