@@ -27,6 +27,14 @@ export WITH_UPLOAD := no
 export LIB_NAME := 
 # TODO : add a "if" on TARGET to launch on this target, or for each known one
 
-# call MakefileLib for a utilities library or MakefileBin for a program
-all:
-	${MAKE} -f ${CORE_DIR}etc/lib.makefile
+# call lib.makefile for a utilities library or bin.makefile for a program
+all upload console:
+	${MAKE} -f ${CORE_DIR}etc/lib.makefile $@
+
+clean:
+ifeq (${TARGET},)
+	rm -rf ${PROJECT_DIR}target/*
+endif
+ifneq (${TARGET},)
+	rm -rf ${PROJECT_DIR}target/${TARGET}
+endif
