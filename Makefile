@@ -5,6 +5,9 @@ export PROJECT_DIR := $(dir $(realpath ${MAKEFILE_LIST}))
 # to define to ArduinoCore root directory 
 CORE_DIR := ${PROJECT_DIR}../ArduinoCore/
 
+# to explicitly exclude parts of code
+export EXCLUDE_DIRS := Ethernet
+
 # other arduino librairies project pathes this project depends on
 export DEPENDENCIES :=
 
