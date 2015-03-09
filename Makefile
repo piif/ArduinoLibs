@@ -1,43 +1,32 @@
-# the directory this project is in
-# must be defined for generic makefile to work
-export PROJECT_DIR := $(dir $(realpath ${MAKEFILE_LIST}))
+# it's just a library
+TODO := lib
 
-# to define to ArduinoCore root directory 
-CORE_DIR := ${PROJECT_DIR}../ArduinoCore/
+include ${AMM_DIR}/etc/Makefile.target
 
-# to explicitly exclude parts of code
-export EXCLUDE_DIRS := Ethernet
+$(info TARGET_PLATFORM = ${TARGET_PLATFORM})
 
-# other arduino librairies project pathes this project depends on
-export DEPENDENCIES :=
+SOURCE_DIRS := ${LIBRARIES_DIRS} .
+INCLUDE_FLAGS += $(addprefix -I,${LIBRARIES_DIRS} ${<D})
 
-# generate assembler source code also
-export WITH_ASSEMBLY := yes
+SOURCE_EXCLUDE_PATTERNS := /examples/ /tests/ /makePolice/
 
-# generate eeprom image
-export WITH_EEPROM := no
-
-# print size of geretated segments 
-export WITH_PRINT_SIZE := no
-
-# only for programs : launch upload
-export WITH_UPLOAD := no
-# where to upload
-# TODO : try to auto detect with lsusb + /proc exploration
-#export UPLOAD_DEVICE := /dev/ttyACM0
-
-# if different of containing dir
-export LIB_NAME := 
-# TODO : add a "if" on TARGET to launch on this target, or for each known one
-
-# call lib.makefile for a utilities library or bin.makefile for a program
-all upload console:
-	${MAKE} -f ${CORE_DIR}etc/lib.makefile $@
-
-clean:
-ifeq (${TARGET},)
-	rm -rf ${PROJECT_DIR}target/*
+ifeq (${TARGET_PLATFORM},sam)
+  SOURCE_EXCLUDES := MsTimer2/ /avr/
+else
+  SOURCE_EXCLUDES := DueTimer/ Audio/
+  SOURCE_EXCLUDE_PATTERNS += /Audio/ /Scheduler/ /USBHost/ /sam/
 endif
-ifneq (${TARGET},)
-	rm -rf ${PROJECT_DIR}target/${TARGET}
+
+ifneq (${TARGET_MCU},atmega32u4)
+  SOURCE_EXCLUDE_PATTERNS += /Esplora/ /Robot /SpacebrewYun/
 endif
+
+${TARGET_DIR}/Wire/Wire.o: INCLUDE_FLAGS += -I${<D}/utility
+${TARGET_DIR}/Servo/src/avr/Servo.o: INCLUDE_FLAGS += -I${<D}/..
+
+INCLUDE_FLAGS += -I${ARDUINO_IDE}/hardware/arduino/${TARGET_PLATFORM}/libraries/SPI
+
+SOURCE_EXCLUDE_PATTERNS += /WiFi/ /SD/ /TFT/ /Ethernet/
+# /Bridge/ /GSM/ /Temboo/ /Servo/
+
+include ${AMM_DIR}/etc/Makefile.main
