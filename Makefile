@@ -1,12 +1,13 @@
 # it's just a library
 TODO := lib
 
-include ${AMM_DIR}/etc/Makefile.target
+include ${ARDDUDE_DIR}/etc/target.mk
 
 $(info TARGET_PLATFORM = ${TARGET_PLATFORM})
 
 SOURCE_DIRS := ${LIBRARIES_DIRS} .
-INCLUDE_FLAGS += $(addprefix -I,${LIBRARIES_DIRS} ${<D})
+# ${<D is a workaround because some libs includes <..> instead of ".." for neighbour files
+INCLUDE_FLAGS_EXTRA += $(addprefix -I,${LIBRARIES_DIRS} ${<D})
 
 SOURCE_EXCLUDE_PATTERNS := /examples/ /tests/ /makePolice/
 
@@ -24,9 +25,10 @@ endif
 ${TARGET_DIR}/Wire/Wire.o: INCLUDE_FLAGS += -I${<D}/utility
 ${TARGET_DIR}/Servo/src/avr/Servo.o: INCLUDE_FLAGS += -I${<D}/..
 
-INCLUDE_FLAGS += -I${ARDUINO_IDE}/hardware/arduino/${TARGET_PLATFORM}/libraries/SPI
-
+# workaround because many libs depends on SPI by including <SPI.h> instead of <SPI/SPI.h>
+INCLUDE_FLAGS_EXTRA += -I${ARDUINO_IDE}/hardware/arduino/${TARGET_PLATFORM}/libraries/SPI
+$(info INCLUDE_FLAGS_EXTRA = ${INCLUDE_FLAGS_EXTRA})
 SOURCE_EXCLUDE_PATTERNS += /WiFi/ /SD/ /TFT/ /Ethernet/
 # /Bridge/ /GSM/ /Temboo/ /Servo/
 
-include ${AMM_DIR}/etc/Makefile.main
+include ${ARDDUDE_DIR}/etc/main.mk
