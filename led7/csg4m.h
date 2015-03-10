@@ -30,6 +30,8 @@ protected:
 	void updateDisplay();
 	byte prepareForSegment(byte s);
 
+	virtual ~CSG4M() = 0;
+
 private:
 	// current mask to send to display
 	volatile byte *toSend;

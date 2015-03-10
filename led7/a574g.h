@@ -19,5 +19,7 @@ protected:
 	word prepareForSegment(byte s);
 	word prepareForPos(word map, byte pos);
 	void doSend(word w);
+
+	virtual ~A574g() = 0;
 };
 #endif

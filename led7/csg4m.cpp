@@ -1,5 +1,6 @@
 #include "csg4m.h"
 #include <Arduino.h>
+#include <stdlib.h>
 #include <Wire/Wire.h>
 
 #define CSG4M_NB_DIGITS 4

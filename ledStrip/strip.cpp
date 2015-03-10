@@ -1,4 +1,5 @@
 #include "strip.h"
+#include <stdlib.h>
 
 Color *strip;
 

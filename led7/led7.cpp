@@ -52,6 +52,9 @@ byte mapSegments[] = {
 };
 
 Led7::Led7() {
+	nbDigits = 0;
+	toDisplay = 0;
+	toDisplayBefore = 0;
 	rollSpeed = 100;
 }
 
