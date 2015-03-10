@@ -15,8 +15,8 @@ ifeq (${TARGET_PLATFORM},sam)
   SOURCE_EXCLUDES := MsTimer2/ /avr/ ledStrip/
   SOURCE_EXCLUDE_PATTERNS += led7/a574g.cpp /GSM/
 else
-  SOURCE_EXCLUDES := DueTimer/ Audio/
-  SOURCE_EXCLUDE_PATTERNS += /Audio/ /Scheduler/ /USBHost/ /sam/
+  SOURCE_EXCLUDES := DueTimer/ Audio/ /sam/
+  SOURCE_EXCLUDE_PATTERNS += /Audio/ /Scheduler/ /USBHost/
 endif
 
 ifneq (${TARGET_MCU},atmega32u4)
@@ -28,8 +28,11 @@ ${TARGET_DIR}/Servo/src/avr/Servo.o: INCLUDE_FLAGS += -I${<D}/..
 
 # workaround because many libs depends on SPI by including <SPI.h> instead of <SPI/SPI.h>
 INCLUDE_FLAGS_EXTRA += -I${ARDUINO_IDE}/hardware/arduino/${TARGET_PLATFORM}/libraries/SPI
-$(info INCLUDE_FLAGS_EXTRA = ${INCLUDE_FLAGS_EXTRA})
+#$(info INCLUDE_FLAGS_EXTRA = ${INCLUDE_FLAGS_EXTRA})
 SOURCE_EXCLUDE_PATTERNS += /WiFi/ /SD/ /TFT/ /Ethernet/ /Servo/
 # /Bridge/ /Temboo/
+
+#$(info SOURCE_EXCLUDE_PATTERNS = ${SOURCE_EXCLUDE_PATTERNS})
+#$(info SOURCE_EXCLUDES = ${SOURCE_EXCLUDES})
 
 include ${ARDDUDE_DIR}/etc/main.mk
