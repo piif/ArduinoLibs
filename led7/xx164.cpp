@@ -1,40 +1,61 @@
 #include "xx164.h"
 
 #include <Arduino.h>
+#include <SPI.h>
 
 #define XX164_NB_DIGITS 1
 // TODO : define these pins with constructor arguments
 #define DATA 2
 #define CLOCK 3
 
-// current segments to light on display
-volatile byte _toDisplay[XX164_NB_DIGITS];
-// segments lighted on before a roll effect was launched
-volatile byte _toDisplayBefore[XX164_NB_DIGITS];
+xx164::xx164(byte _nbDigits, volatile byte _pins[]) :
+		Led7() {
 
-// current mask to send to display
-volatile word toSend[XX164_NB_DIGITS];
+	nbDigits = _nbDigits;
+	pins = _pins;
+	toSend = new volatile byte[nbDigits];
+	toDisplay = new volatile byte[nbDigits];
+	toDisplayBefore = new volatile byte[nbDigits];
+	current = 0;
 
-xx164::xx164() : Led7() {
-	nbDigits = XX164_NB_DIGITS;
-
-	this->toDisplay = _toDisplay;
-	this->toDisplayBefore = _toDisplayBefore;
-
-	// call super() ?
-	pinMode(DATA, OUTPUT);
-	pinMode(CLOCK, OUTPUT);
-	digitalWrite(CLOCK, LOW);
+	SPI.begin();
+	SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+//	// call super() ?
+//	pinMode(DATA, OUTPUT);
+//	pinMode(CLOCK, OUTPUT);
+//	for (byte i = 0; i < nbDigits; i++) {
+//		pinMode(pins[i], OUTPUT);
+//		digitalWrite(pins[i], LOW);
+//	}
+//	digitalWrite(CLOCK, LOW);
 	prepareDisplay(0, 0);
 }
 
 void xx164::prepareDisplay(byte pos, byte segments) {
-	toSend[0] = ~segments;
-}
-void xx164::updateDisplay() {
-	shiftOut(DATA, CLOCK, MSBFIRST, toSend[0]);
+	toSend[pos] = ~segments;
 }
 
+void xx164::updateDisplay() {
+	// nothing to do
+}
+
+void xx164::send() {
+	Led7::send();
+
+	byte next = (current + 1) % nbDigits;
+	digitalWrite(pins[current], LOW);
+//	Serial.print(next);
+//	Serial.println(toSend[next], HEX);
+//	shiftOut(DATA, CLOCK, MSBFIRST, toSend[next]);
+	SPI.transfer(toSend[next]);
+	digitalWrite(pins[next], HIGH);
+	current = next;
+}
+
+xx164::~xx164() {
+	delete toDisplay;
+	delete toDisplayBefore;
+}
 //volatile short digit = 0;
 
 //void A574g::send() {
