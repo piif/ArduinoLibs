@@ -1,7 +1,5 @@
 ArduinoLibs
 ============
 
-Some of the libraries included in Arduino IDE, organized in an Eclipse Project.
-
-The project contains several targets (Uno, Mega, ..), and refers to ArduinoCore project. 
-
+This Eclipse project depends on ArdDude one to find Arduino IDE libraries and user ones and compile them
+Resulting libArduinoLibs.a file may be linked with your own code
