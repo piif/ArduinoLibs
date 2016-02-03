@@ -893,7 +893,7 @@ void scrollMessage(LedControl &lc, char *messageString, unsigned long scrollDela
 }
 // Load character into scroll buffer
 void loadBufferLong(LedControl &lc, int ascii, unsigned long scrollDelay){
-    if (ascii >= 0x20 && ascii <=0x7f){
+    if (ascii >= 0x20 && ascii <=0x7f) {
         for (int a=0;a<7;a++){                      // Loop 7 times for a 5x7 font
             unsigned long c = pgm_read_byte_near(font5x7 + ((ascii - 0x20) * 8) + a);     // Index into character table to get row data
             unsigned long x = bufferLong [a*2];     // Load current scroll buffer
@@ -926,13 +926,13 @@ void printBufferLong(LedControl &lc){
   for (int a=0;a<7;a++){                    // Loop 7 times for a 5x7 font
     unsigned long x = bufferLong [a*2+1];   // Get high buffer entry
     byte y = x;                             // Mask off first character
-    lc.setRow(3,a,y);                       // Send row to relevent MAX7219 chip
+    lc.setRow(0,a,y);                       // Send row to relevent MAX7219 chip
     x = bufferLong [a*2];                   // Get low buffer entry
     y = (x>>24);                            // Mask off second character
-    lc.setRow(2,a,y);                       // Send row to relevent MAX7219 chip
-    y = (x>>16);                            // Mask off third character
     lc.setRow(1,a,y);                       // Send row to relevent MAX7219 chip
+    y = (x>>16);                            // Mask off third character
+    lc.setRow(2,a,y);                       // Send row to relevent MAX7219 chip
     y = (x>>8);                             // Mask off forth character
-    lc.setRow(0,a,y);                       // Send row to relevent MAX7219 chip
+    lc.setRow(3,a,y);                       // Send row to relevent MAX7219 chip
   }
 }

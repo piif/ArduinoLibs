@@ -75,6 +75,6 @@ public:
 	virtual void prepareDisplay(byte pos, byte segments) = 0;
 	virtual void updateDisplay() = 0;
 
-	virtual ~Led7() = 0;
+	virtual ~Led7() {};
 };
 #endif

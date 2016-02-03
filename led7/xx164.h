@@ -15,14 +15,17 @@
 
 class xx164 : public Led7 {
 public:
-	xx164();
+	xx164(byte nbDigits, volatile byte pins[]);
 	void send();
 
-	~xx164() {};
+	virtual ~xx164();
 
-protected:
+//protected:
 	void prepareDisplay(byte pos, byte segments);
 	void updateDisplay();
 
+	volatile byte *pins;
+	volatile byte *toSend;
+	volatile byte current;
 };
 #endif
