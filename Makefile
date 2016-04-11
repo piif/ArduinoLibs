@@ -29,7 +29,8 @@ ${TARGET_DIR}/Servo/src/avr/Servo.o: INCLUDE_FLAGS += -I${<D}/..
 # workaround because many libs depends on SPI by including <SPI.h> instead of <SPI/SPI.h>
 INCLUDE_FLAGS_EXTRA += -I${ARDUINO_IDE}/hardware/arduino/${TARGET_PLATFORM}/libraries/SPI
 #$(info INCLUDE_FLAGS_EXTRA = ${INCLUDE_FLAGS_EXTRA})
-SOURCE_EXCLUDE_PATTERNS += /WiFi/ /SD/ /TFT/ /Ethernet/ /Servo/
+SOURCE_EXCLUDE_PATTERNS += /WiFi/ /SD/ /TFT/ /Ethernet/
+# /Servo/
 # /Bridge/ /Temboo/
 
 #$(info SOURCE_EXCLUDE_PATTERNS = ${SOURCE_EXCLUDE_PATTERNS})
