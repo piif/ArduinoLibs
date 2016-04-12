@@ -4,21 +4,21 @@
 #define outputChar(c) (*writeChar)(c);len++
 
 int i2h(writeCharFunc writeChar, uint32_t v, uint8_t size) {
-	int delta = size * 8 - 4;
-	uint32_t mask = 0xF << delta;
-	int i = size * 2;
+	uint8_t delta = size * 8 - 4;
+	uint32_t mask = ((uint32_t)0x0F) << delta;
+	uint8_t i = size * 2;
 	while (i) {
 		char c = (v & mask) >> delta;
-		(*writeChar)(c < 10 ? c + '0' : c -10 + 'a');
+		(*writeChar)((c < 10) ? (c + '0') : (c - 10 + 'a'));
 		v <<= 4;
 		i--;
 	}
 	return size * 2;
 }
 int i2b(writeCharFunc writeChar, uint32_t v, uint8_t size) {
-	uint32_t mask = 0x1 << (size * 8 - 1);
+	uint32_t mask = ((uint32_t)0x01) << (size * 8 - 1);
 	while(mask) {
-		(*writeChar)(v & mask ? '1' : '0');
+		(*writeChar)((v & mask) ? '1' : '0');
 		mask >>= 1;
 	}
 	return size * 8;
@@ -94,7 +94,7 @@ int gvprintf(writeCharFunc writeChar, char *fmt, va_list ap) {
 				break;
 			case 'c':
 				{
-					char c = va_arg (ap, int /*char*/);
+					unsigned char c = (unsigned char)va_arg (ap, int /*char*/);
 					outputChar(c);
 				}
 				break;
