@@ -1,5 +1,6 @@
 #include "vprintf.h"
 #include <inttypes.h>
+#include <avr/pgmspace.h>
 
 #define outputChar(c) (*writeChar)(c);len++
 
@@ -89,6 +90,16 @@ int gvprintf(writeCharFunc writeChar, char *fmt, va_list ap) {
 					char *s = va_arg (ap, char *);
 					while(*s) {
 						outputChar(*s++);
+					}
+				}
+				break;
+			case 'S':
+				{
+					char *s = va_arg (ap, char *);
+					char c;
+					while((c = pgm_read_byte(s)) != '\0') {
+						outputChar(c);
+						s++;
 					}
 				}
 				break;
