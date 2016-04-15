@@ -1,4 +1,6 @@
 /**
+ * copyright Christian Lefebvre 2016, released under LGPL
+ *
  * light version of HardwareSerial.h limited to serial0 and without C++
  * Everything is a copy of standard arduino HardwareSerial lib, converted in C syntax
  */

@@ -1,3 +1,7 @@
+/**
+ * copyright Christian Lefebvre 2016, released under LGPL
+ */
+
 #ifndef VPRINTF_H
 #define VPRINTF_H
 

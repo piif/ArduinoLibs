@@ -1,3 +1,7 @@
+/**
+ * copyright Christian Lefebvre 2016, released under LGPL
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

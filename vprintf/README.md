@@ -1,6 +1,14 @@
 vprintf lib
 =====
 
+Author
+-----
+
+Christian Lefebvre : christian underscore lefebvre at laposte dot net
+
+Released under LGPL
+
+
 Intro
 -----
 This library defines a generic reduced printf like function :

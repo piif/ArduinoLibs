@@ -1,3 +1,7 @@
+/**
+ * copyright Christian Lefebvre 2016, released under LGPL
+ */
+
 #include "vprintf.h"
 #include <inttypes.h>
 #include <avr/pgmspace.h>
