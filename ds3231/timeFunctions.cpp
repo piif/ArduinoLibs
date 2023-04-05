@@ -5,13 +5,13 @@ const byte lastDay[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 char *shortDays[8] = {
     "",
-    "Lun",
-    "Mar",
-    "Mer",
-    "Jeu",
-    "Ven",
-    "Sam",
-    "Dim"
+    "lun",
+    "mar",
+    "mer",
+    "jeu",
+    "ven",
+    "sam",
+    "dim"
 };
 
 char *shortMonthes[13] = {
