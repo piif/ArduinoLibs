@@ -7,7 +7,7 @@
 
 #define MATRIX_CLK A2
 #define MATRIX_CS  A1
-#define MATRIX_DIN A4
+#define MATRIX_DIN 7
 
 #define WIDTH 12
 
