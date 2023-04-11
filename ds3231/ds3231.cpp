@@ -5,7 +5,7 @@
 #include "ds3231.h"
 
 DS3231::DS3231() {
-    Wire.begin();
+    //Wire.begin();
 }
 
 #ifdef DS3231_DEBUG
@@ -36,6 +36,7 @@ byte DS3231::bcdToDec(byte val) {
 }
 
 void DS3231::getTime(TimeStruct *time) {
+    Wire.begin();
     Wire.beginTransmission(DS3231_I2C_ADDRESS);
     Wire.write(0);
     Wire.endTransmission();
@@ -49,9 +50,11 @@ void DS3231::getTime(TimeStruct *time) {
     time->dayOfMonth  = bcdToDec(Wire.read());
     time->month       = bcdToDec(Wire.read());
     time->year        = bcdToDec(Wire.read());
+    Wire.end();
 }
 
 int DS3231::getFullTemp() {
+    Wire.begin();
     Wire.beginTransmission(DS3231_I2C_ADDRESS);
     Wire.write(DS3231_REG_MSB_Temp);
     Wire.endTransmission();
@@ -59,6 +62,7 @@ int DS3231::getFullTemp() {
     Wire.requestFrom(DS3231_I2C_ADDRESS, 2);
     int result = Wire.read() << 2;
     result |= Wire.read() >> 6;
+    Wire.end();
     if (result & 0x200) {
         result |= 0xFE00;
     }
@@ -66,15 +70,19 @@ int DS3231::getFullTemp() {
 }
 
 short DS3231::getShortTemp() {
+    Wire.begin();
     Wire.beginTransmission(DS3231_I2C_ADDRESS);
     Wire.write(DS3231_REG_MSB_Temp);
     Wire.endTransmission();
 
     Wire.requestFrom(DS3231_I2C_ADDRESS, 1);
-    return (short)(Wire.read());
+    short result = (short)Wire.read();
+    Wire.end();
+    return result;
 }
 
 void DS3231::setTime(TimeStruct *time) {
+    Wire.begin();
     Wire.beginTransmission(DS3231_I2C_ADDRESS);
     Wire.write(0);
     Wire.write(decToBcd(time->seconds));
@@ -85,29 +93,37 @@ void DS3231::setTime(TimeStruct *time) {
     Wire.write(decToBcd(time->month));
     Wire.write(decToBcd(time->year));
     Wire.endTransmission();
+    Wire.end();
 }
 
 void DS3231::setControl(byte control, byte status) {
+    Wire.begin();
     Wire.beginTransmission(DS3231_I2C_ADDRESS);
     Wire.write(DS3231_REG_Control);
     Wire.write(control);
     Wire.write(status);
     Wire.endTransmission();
+    Wire.end();
 }
 byte DS3231::registerRead(byte address) {
+    Wire.begin();
     Wire.beginTransmission(DS3231_I2C_ADDRESS);
     Wire.write(address);
     Wire.endTransmission();
 
     Wire.requestFrom(DS3231_I2C_ADDRESS, 1);
-    return (byte)(Wire.read());
+    byte result = Wire.read();
+    Wire.end();
+    return result;
 }
 
 void DS3231::registerWrite(byte address, byte value) {
+    Wire.begin();
     Wire.beginTransmission(DS3231_I2C_ADDRESS);
     Wire.write(address);
     Wire.write(value);
     Wire.endTransmission();
+    Wire.end();
 }
 
 #ifdef DS3231_DEBUG
