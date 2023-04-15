@@ -1,10 +1,12 @@
 // arduino tools chain includes eveything ...
 // => force include only from inside font7.cpp
 #ifdef FONT8_CPP
+#define SPACE_WIDTH 1
 
 // Numeric Font Matrix (Arranged as 8x font data + 1x kerning data)
 // ascii chars from 0x20 (space) to 0x7F (°)
 const byte font [] PROGMEM = {
+#ifndef REDUCED_MAP
     0b00000000, //Space (Char 0x20)
     0b00000000,
     0b00000000,
@@ -13,7 +15,7 @@ const byte font [] PROGMEM = {
     0b00000000,
     0b00000000,
     0b00000000,
-    1,
+    SPACE_WIDTH,
 
     0b00000000, //!
     0b10000000,
@@ -164,7 +166,7 @@ const byte font [] PROGMEM = {
     0b00000000,
     0b00000000,
     6,
-
+#endif
     0b01100000, //0
     0b10010000,
     0b10010000,
@@ -335,6 +337,7 @@ const byte font [] PROGMEM = {
     0b00000000,
     6,
 
+#ifndef REDUCED_MAP
     0b01110000, //A
     0b10001000,
     0b10001000,
@@ -644,7 +647,7 @@ const byte font [] PROGMEM = {
     0b00000000,
     0b11111000,
     6,
-
+#endif
     0b10000000, //`
     0b01000000,
     0b00100000,
@@ -955,7 +958,7 @@ const byte font [] PROGMEM = {
     0b00000000,
     6,
 
-    0b01100000, // (Char 0x7F)
+    0b01100000, //° (Char 0x7F)
     0b10010000,
     0b10010000,
     0b01100000,

@@ -12,5 +12,5 @@ ARDDUDE_OPTIONS := -l cr -o raw -d
 PORT := /dev/ttyUSB0
 LIBRARY_PATH := ..
 ARDUINO_CLI_UPLOAD_OPTS=-v
-# ARDUINO_CLI_COMPILE_OPTS=-v
+ARDUINO_CLI_COMPILE_OPTS=--build-property "build.extra_flags=-DREDUCED_MAP"
 MAIN_SOURCE := example/example.ino

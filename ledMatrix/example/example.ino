@@ -18,7 +18,7 @@
 #else
     #define MATRIX_CLK 1
     #define MATRIX_CS  4
-    #define MATRIX_DIN 0
+    #define MATRIX_DIN 3 // 0
 #endif
 
 #define WIDTH 12
