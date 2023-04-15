@@ -1,16 +1,22 @@
-#define HAVE_SERIAL
+#include "ds3231.h"
 
-#include <Arduino.h>
-#ifdef ARDUINO_attiny
+#if defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny25__)
+	#define ARDUINO_TINY
+#elif defined(__AVR_MEGA__)
+	#define ARDUINO_UNO
+    #define HAVE_SERIAL
+#endif
+
+#ifdef ARDUINO_TINY
     #include "TinyWireM.h"
     #define I2C TinyWireM
 #else
     #include <Wire.h>
     #define I2C Wire
 #endif
-#include "ds3231.h"
 
 DS3231::DS3231() {
+    // initialize before each call, to be able to share pins with other components
     //I2C.begin();
 }
 
@@ -132,7 +138,7 @@ void DS3231::registerWrite(byte address, byte value) {
     I2C.end();
 }
 
-#ifdef DS3231_DEBUG
+#if defined HAVE_SERIAL && defined DS3231_DEBUG
 static char *DS3231::registerContents[0x13] = {
     /* 0x00 */ "Seconds",
     /* 0x01 */ "Minutes",

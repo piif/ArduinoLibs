@@ -26,6 +26,7 @@
 #define DS3231_REG_Offset     0x10 
 #define DS3231_REG_MSB_Temp   0x11 
 #define DS3231_REG_LSB_Temp   0x12 
+
 class DS3231 {
 public:
     typedef struct _ControlRegister {
@@ -70,7 +71,7 @@ public:
 #endif
 
 private:
-#ifdef DS3231_DEBUG
+#if defined HAVE_SERIAL && defined DS3231_DEBUG
     static char *DS3231::registerContents[0x13];
 #endif
 

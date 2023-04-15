@@ -1,13 +1,32 @@
 #include <Arduino.h>
 
-#define HAVE_SERIAL
+#if defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny25__)
+	#define ARDUINO_TINY
+#elif defined(__AVR_MEGA__)
+	#define ARDUINO_UNO
+    #define HAVE_SERIAL
+#endif
+
+#ifdef ARDUINO_UNO
+    #define DS_SQW A3
+#else
+    #define DS_SQW 1
+    #define DEBUG_PORT 3
+#endif
 
 #include "ds3231.h"
 #include "timeFunctions.h"
 
-#define DS_SQW A3
 
 DS3231 rtc;
+
+#if defined DEBUG_PORT
+void dumpByte(byte value) {
+    for(byte mask = 0x80 ; mask >>= 1; mask) {
+        digitalWrite(DEBUG_PORT, (value & mask) != 0);
+    }
+}
+#endif
 
 void displayTime() {
     TimeStruct time;
@@ -26,6 +45,16 @@ void displayTime() {
     short temp = rtc.getShortTemp();
     Serial.print("full temp : "); Serial.println(fullTemp);
     Serial.print("temp      : "); Serial.println(temp);
+#elif defined DEBUG_PORT
+    dumpByte(0x7E);
+    dumpByte(time.year);
+    dumpByte(time.month);
+    dumpByte(time.dayOfMonth);
+    dumpByte(time.dayOfWeek);
+    dumpByte(time.hours);
+    dumpByte(time.minutes);
+    dumpByte(time.seconds);
+    dumpByte(0x7E);
 #endif
 }
 
@@ -34,13 +63,23 @@ void setup() {
     Serial.begin(115200);
 #endif
 
-    // // initialize external interrupt on raising edge of pin 2 (INT0)
+#ifdef ARDUINO_UNO
+   // // initialize external interrupt on raising edge of pin 2 (INT0)
     // EICRA |= 0x03;
     // EIMSK |= 1 << INT0;
 
     // initialize external interrupt on pin A3 (PCINT11)
     PCMSK1 |= 1 << PCINT11;
     PCICR  |= 1 << PCIE1;
+#endif
+
+// #ifdef ARDUINO_TINY
+//     TCCR1 = 0;
+// #endif
+
+#if defined DEBUG_PORT
+    pinMode(DEBUG_PORT, OUTPUT);
+#endif
 
 // #define INITIALIZE TRUE
 #ifdef INITIALIZE
@@ -69,6 +108,7 @@ void setup() {
 #endif
 }
 
+#ifdef ARDUINO_UNO
 volatile bool clockTick = 0;
 
 // ISR(INT0_vect) {
@@ -84,3 +124,8 @@ void loop() {
         clockTick = 0;
     }
 }
+#else
+void loop() {
+    displayTime();
+}
+#endif
