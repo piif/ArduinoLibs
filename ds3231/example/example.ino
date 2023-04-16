@@ -33,9 +33,21 @@ void displayTime() {
     rtc.getTime(&time);
     toLocal(&time);
 #ifdef HAVE_SERIAL
-    Serial.print("dayOfWeek : "); Serial.println(shortDays[time.dayOfWeek]);
+    Serial.print("dayOfWeek : "); Serial.print(time.dayOfWeek);
+    const char *dayOfWeek = (char *)pgm_read_word(&(shortDays[time.dayOfWeek]));
+    Serial.print(" = ");
+    while (char c=pgm_read_byte(dayOfWeek++)) {
+        Serial.print(c);
+    }
+    Serial.println();
     Serial.print("dayOfMonth: "); Serial.println(time.dayOfMonth);
-    Serial.print("month     : "); Serial.println(time.month);
+    Serial.print("month     : "); Serial.print(time.month);
+    const char *month = (char *)pgm_read_word(&(shortMonthes[time.month]));
+    Serial.print(" = ");
+    while (char c=pgm_read_byte(month++)) {
+        Serial.print(c);
+    }
+    Serial.println();
     Serial.print("year      : "); Serial.println(time.year);
     Serial.print("hours     : "); Serial.println(time.hours);
     Serial.print("minutes   : "); Serial.println(time.minutes);
@@ -102,9 +114,13 @@ void setup() {
     // setControl(0b00000100 , 0b10001000);
 #endif
 
-#ifdef HAVE_SERIAL
+#if define HAVE_SERIAL && defined DEBUG_DS3231
     Serial.println("dumpAllRegisters :");
     rtc.dumpAllRegisters();
+#endif
+
+#ifdef HAVE_SERIAL
+    Serial.println("Setup OK");
 #endif
 }
 

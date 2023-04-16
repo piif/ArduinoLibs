@@ -1,11 +1,11 @@
 # FOR UNO
-#BOARD := arduino:avr:uno
+BOARD := arduino:avr:uno
 #ARDUINO_CLI_COMPILE_OPTS=--build-property "build.extra_flags=-DDS3231_DEBUG"
-#LIBRARY_PATH := ..
+LIBRARY_PATH := ..
 
 # FOR TINY
-BOARD := attiny:avr:ATtinyX5:cpu=attiny85,clock=internal8
-LIBRARY_PATH := .. ../../../adafruits
+#BOARD := attiny:avr:ATtinyX5:cpu=attiny85,clock=internal8
+#LIBRARY_PATH := .. ../../../adafruits
 
 ARDDUDE_OPTIONS := -l cr -o raw -d
 PORT := /dev/ttyUSB0
