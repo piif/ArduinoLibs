@@ -8,13 +8,13 @@
 	#define ARDUINO_TINY
 #elif defined(__AVR_MEGA__)
 	#define ARDUINO_UNO
-    // #define HAVE_SERIAL
+    #define HAVE_SERIAL
 #endif
 
 #ifdef ARDUINO_UNO
     #define MATRIX_CLK A2
     #define MATRIX_CS  A1
-    #define MATRIX_DIN A4
+    #define MATRIX_DIN 7 // A4
 #else
     #define MATRIX_CLK 1
     #define MATRIX_CS  4
@@ -30,15 +30,33 @@ byte testBuffer[] = {
     0x03, 0x0C, 0x30, 0xC0, 0x11, 0x22, 0x44, 0x88
 };
 
+const char pgmStr[] PROGMEM = "progmem string";
+
 void setup() {
 #ifdef HAVE_SERIAL
     Serial.begin(115200);
+    Serial.println("Setup start");
 #endif
 
+#ifdef HAVE_SERIAL
+    delay(1000);
+    Serial.println("send testBuffer");
+#endif
     for (byte i=0; i<8; i++) {
         ledMatrix.sendCommand(i+1, testBuffer[i], WIDTH);
     }
+
+    delay(1000);
+
+#ifdef HAVE_SERIAL
+    Serial.println("draw pgmStr");
+#endif
+    ledMatrix.clear();
+    ledMatrix.drawString_P(1, pgmStr);
     ledMatrix.flush();
+
+    delay(1000);
+
 #ifdef HAVE_SERIAL
     Serial.println("Setup OK");
 #endif
