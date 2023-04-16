@@ -1,10 +1,10 @@
 # FOR UNO
-#BOARD := arduino:avr:uno
-#PORT := /dev/ttyUSB0
+BOARD := arduino:avr:uno
+PORT := /dev/ttyUSB0
 
 # FOR TINY
-BOARD := attiny:avr:ATtinyX5:cpu=attiny85,clock=internal8
-PORT := /dev/ttyUSB0
+#BOARD := attiny:avr:ATtinyX5:cpu=attiny85,clock=internal8
+#PORT := /dev/ttyUSB0
 
 #BOARD := arduino:avr:nano:cpu=atmega328isp
 

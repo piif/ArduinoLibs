@@ -14,7 +14,7 @@
 #endif
 
 #ifdef REDUCED_MAP
-    #define CHAR_POS(c) ( (c) >= 0x60 ? (c) - 0x50 : (c) - 0x40 ) 
+    #define CHAR_POS(c) ( ((c) >= 0x60) ? ((c) - 0x50) : ((c) - 0x30) ) 
 #else
     #define CHAR_POS(c) ((c) - 0x20) 
 #endif
@@ -25,7 +25,7 @@ byte charWidth(char c) {
     if (c == 0x20) {
         return SPACE_WIDTH;
     }
-    if (c < 0x40 || (c >= 0x50 && c < 0x60) || c > 0x7F) {
+    if (c < 0x30 || (c >= 0x40 && c < 0x60) || c > 0x7F) {
         return 0;
     }
 #else
