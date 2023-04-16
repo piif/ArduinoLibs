@@ -66,7 +66,7 @@ public:
     void registerWrite(byte address, byte value);
     void setControl(byte control, byte status);
 
-#ifdef DS3231_DEBUG
+#if defined HAVE_SERIAL && defined DS3231_DEBUG
     void dumpAllRegisters();
 #endif
 

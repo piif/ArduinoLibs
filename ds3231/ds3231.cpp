@@ -20,7 +20,7 @@ DS3231::DS3231() {
     //I2C.begin();
 }
 
-#ifdef DS3231_DEBUG
+#if defined HAVE_SERIAL && defined DS3231_DEBUG
 void DS3231::dumpAllRegisters() {
     I2C.beginTransmission(DS3231_I2C_ADDRESS);
     I2C.write(0);
