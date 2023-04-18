@@ -14,8 +14,8 @@ typedef struct _TimeStruct {
     byte year;       /*  0 - 99 */
 } TimeStruct;
 
-extern char *shortDays[8];
-extern char *shortMonthes[13];
+extern const char * const shortDays[] PROGMEM;
+extern const char * const shortMonthes[] PROGMEM;
 
 byte lastDayOfMonth(byte month, byte year);
 

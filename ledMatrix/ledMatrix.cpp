@@ -100,6 +100,13 @@ int LedMatrix::drawChar(int X, char c) {
 int LedMatrix::drawString(int X, char *str) {
     return ::drawString(matrix, width, X, str);
 }
+int LedMatrix::drawString_P(int X, const char * const str) {
+    char *ptr = str;
+    while(char c = pgm_read_byte(ptr++)) {
+        X = ::drawChar(matrix, width, X, c);
+    }
+    return X;
+}
 
 void LedMatrix::drawPixel(int X, int Y, bool value) {
     byte lineOffset = X / 8;

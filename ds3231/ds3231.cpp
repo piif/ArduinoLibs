@@ -1,24 +1,36 @@
-#define HAVE_SERIAL
-
-#include <Arduino.h>
-#include <Wire.h>
 #include "ds3231.h"
 
+#if defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny25__)
+	#define ARDUINO_TINY
+#elif defined(__AVR_MEGA__)
+	#define ARDUINO_UNO
+    #define HAVE_SERIAL
+#endif
+
+#ifdef ARDUINO_TINY
+    #include "TinyWireM.h"
+    #define I2C TinyWireM
+#else
+    #include <Wire.h>
+    #define I2C Wire
+#endif
+
 DS3231::DS3231() {
-    //Wire.begin();
+    // initialize before each call, to be able to share pins with other components
+    //I2C.begin();
 }
 
-#ifdef DS3231_DEBUG
+#if defined HAVE_SERIAL && defined DS3231_DEBUG
 void DS3231::dumpAllRegisters() {
-    Wire.beginTransmission(DS3231_I2C_ADDRESS);
-    Wire.write(0);
-    Wire.endTransmission();
+    I2C.beginTransmission(DS3231_I2C_ADDRESS);
+    I2C.write(0);
+    I2C.endTransmission();
 
-    Wire.requestFrom(DS3231_I2C_ADDRESS, DS3231_REG_NUM);
+    I2C.requestFrom(DS3231_I2C_ADDRESS, DS3231_REG_NUM);
 
     byte registerValues[DS3231_REG_NUM];
     for (byte i=0; i< DS3231_REG_NUM; i++) {
-        registerValues[i] = Wire.read();
+        registerValues[i] = I2C.read();
     }
     for (byte i=0; i< DS3231_REG_NUM; i++) {
         Serial.print(registerContents[i]);
@@ -36,33 +48,33 @@ byte DS3231::bcdToDec(byte val) {
 }
 
 void DS3231::getTime(TimeStruct *time) {
-    Wire.begin();
-    Wire.beginTransmission(DS3231_I2C_ADDRESS);
-    Wire.write(0);
-    Wire.endTransmission();
+    I2C.begin();
+    I2C.beginTransmission(DS3231_I2C_ADDRESS);
+    I2C.write(0);
+    I2C.endTransmission();
 
-    Wire.requestFrom(DS3231_I2C_ADDRESS, 7);
+    I2C.requestFrom(DS3231_I2C_ADDRESS, 7);
 
-    time->seconds     = bcdToDec(Wire.read() & 0x7f);
-    time->minutes     = bcdToDec(Wire.read());
-    time->hours       = bcdToDec(Wire.read() & 0x3f);
-    time->dayOfWeek   = bcdToDec(Wire.read());
-    time->dayOfMonth  = bcdToDec(Wire.read());
-    time->month       = bcdToDec(Wire.read());
-    time->year        = bcdToDec(Wire.read());
-    Wire.end();
+    time->seconds     = bcdToDec(I2C.read() & 0x7f);
+    time->minutes     = bcdToDec(I2C.read());
+    time->hours       = bcdToDec(I2C.read() & 0x3f);
+    time->dayOfWeek   = bcdToDec(I2C.read());
+    time->dayOfMonth  = bcdToDec(I2C.read());
+    time->month       = bcdToDec(I2C.read());
+    time->year        = bcdToDec(I2C.read());
+    I2C.end();
 }
 
 int DS3231::getFullTemp() {
-    Wire.begin();
-    Wire.beginTransmission(DS3231_I2C_ADDRESS);
-    Wire.write(DS3231_REG_MSB_Temp);
-    Wire.endTransmission();
+    I2C.begin();
+    I2C.beginTransmission(DS3231_I2C_ADDRESS);
+    I2C.write(DS3231_REG_MSB_Temp);
+    I2C.endTransmission();
 
-    Wire.requestFrom(DS3231_I2C_ADDRESS, 2);
-    int result = Wire.read() << 2;
-    result |= Wire.read() >> 6;
-    Wire.end();
+    I2C.requestFrom(DS3231_I2C_ADDRESS, 2);
+    int result = I2C.read() << 2;
+    result |= I2C.read() >> 6;
+    I2C.end();
     if (result & 0x200) {
         result |= 0xFE00;
     }
@@ -70,63 +82,63 @@ int DS3231::getFullTemp() {
 }
 
 short DS3231::getShortTemp() {
-    Wire.begin();
-    Wire.beginTransmission(DS3231_I2C_ADDRESS);
-    Wire.write(DS3231_REG_MSB_Temp);
-    Wire.endTransmission();
+    I2C.begin();
+    I2C.beginTransmission(DS3231_I2C_ADDRESS);
+    I2C.write(DS3231_REG_MSB_Temp);
+    I2C.endTransmission();
 
-    Wire.requestFrom(DS3231_I2C_ADDRESS, 1);
-    short result = (short)Wire.read();
-    Wire.end();
+    I2C.requestFrom(DS3231_I2C_ADDRESS, 1);
+    short result = (short)I2C.read();
+    I2C.end();
     return result;
 }
 
 void DS3231::setTime(TimeStruct *time) {
-    Wire.begin();
-    Wire.beginTransmission(DS3231_I2C_ADDRESS);
-    Wire.write(0);
-    Wire.write(decToBcd(time->seconds));
-    Wire.write(decToBcd(time->minutes));
-    Wire.write(decToBcd(time->hours));
-    Wire.write(decToBcd(time->dayOfWeek));
-    Wire.write(decToBcd(time->dayOfMonth));
-    Wire.write(decToBcd(time->month));
-    Wire.write(decToBcd(time->year));
-    Wire.endTransmission();
-    Wire.end();
+    I2C.begin();
+    I2C.beginTransmission(DS3231_I2C_ADDRESS);
+    I2C.write(0);
+    I2C.write(decToBcd(time->seconds));
+    I2C.write(decToBcd(time->minutes));
+    I2C.write(decToBcd(time->hours));
+    I2C.write(decToBcd(time->dayOfWeek));
+    I2C.write(decToBcd(time->dayOfMonth));
+    I2C.write(decToBcd(time->month));
+    I2C.write(decToBcd(time->year));
+    I2C.endTransmission();
+    I2C.end();
 }
 
 void DS3231::setControl(byte control, byte status) {
-    Wire.begin();
-    Wire.beginTransmission(DS3231_I2C_ADDRESS);
-    Wire.write(DS3231_REG_Control);
-    Wire.write(control);
-    Wire.write(status);
-    Wire.endTransmission();
-    Wire.end();
+    I2C.begin();
+    I2C.beginTransmission(DS3231_I2C_ADDRESS);
+    I2C.write(DS3231_REG_Control);
+    I2C.write(control);
+    I2C.write(status);
+    I2C.endTransmission();
+    I2C.end();
 }
 byte DS3231::registerRead(byte address) {
-    Wire.begin();
-    Wire.beginTransmission(DS3231_I2C_ADDRESS);
-    Wire.write(address);
-    Wire.endTransmission();
+    I2C.begin();
+    I2C.beginTransmission(DS3231_I2C_ADDRESS);
+    I2C.write(address);
+    I2C.endTransmission();
 
-    Wire.requestFrom(DS3231_I2C_ADDRESS, 1);
-    byte result = Wire.read();
-    Wire.end();
+    I2C.requestFrom(DS3231_I2C_ADDRESS, 1);
+    byte result = I2C.read();
+    I2C.end();
     return result;
 }
 
 void DS3231::registerWrite(byte address, byte value) {
-    Wire.begin();
-    Wire.beginTransmission(DS3231_I2C_ADDRESS);
-    Wire.write(address);
-    Wire.write(value);
-    Wire.endTransmission();
-    Wire.end();
+    I2C.begin();
+    I2C.beginTransmission(DS3231_I2C_ADDRESS);
+    I2C.write(address);
+    I2C.write(value);
+    I2C.endTransmission();
+    I2C.end();
 }
 
-#ifdef DS3231_DEBUG
+#if defined HAVE_SERIAL && defined DS3231_DEBUG
 static char *DS3231::registerContents[0x13] = {
     /* 0x00 */ "Seconds",
     /* 0x01 */ "Minutes",

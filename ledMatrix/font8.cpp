@@ -13,12 +13,27 @@
 #include <font8wide.h>
 #endif
 
+#ifdef REDUCED_MAP
+    #define CHAR_POS(c) ( ((c) >= 0x60) ? ((c) - 0x50) : ((c) - 0x30) ) 
+#else
+    #define CHAR_POS(c) ((c) - 0x20) 
+#endif
+
 // return width of character
 byte charWidth(char c) {
+#ifdef REDUCED_MAP
+    if (c == 0x20) {
+        return SPACE_WIDTH;
+    }
+    if (c < 0x30 || (c >= 0x40 && c < 0x60) || c > 0x7F) {
+        return 0;
+    }
+#else
     if (c < 0x20 || c > 0x7F) {
         return 0;
     }
-    return pgm_read_byte_near(font + ((c - 0x20) * 9) + 8);
+#endif
+    return pgm_read_byte_near(font + (CHAR_POS(c) * 9) + 8);
 }
 
 // Given an array of 8xN bytes containing 8 lines (top to 0bottom) of N bytes (left to right) of 8 0bits (MSB = left, LSB = right)
@@ -29,7 +44,11 @@ int drawChar(byte *matrix, byte width, int X, char c) {
     if (cw == 0) {
         return X;
     }
-
+#ifdef REDUCED_MAP
+    if (c == ' ') {
+        return X + SPACE_WIDTH;
+    }
+#endif 
     byte lineOffset = X / 8;
     if (lineOffset >= width) {
         return;
@@ -44,7 +63,7 @@ int drawChar(byte *matrix, byte width, int X, char c) {
     }
 
     byte *ptr = matrix + lineOffset;
-    byte *fontChar = font + ((c - 0x20) * 9);
+    byte *fontChar = font + (CHAR_POS(c) * 9);
     for(byte y=0; y<8; y++) {
         byte map = pgm_read_byte_near(fontChar + y);
         ptr[0] |= map >> bitOffset;
