@@ -53,11 +53,20 @@ void LedMatrix::sendData(byte address, byte *values, byte len) {
 #endif
     pinMode(din, OUTPUT);
 
-    while(len--) {
-        shiftOut(din, clk, MSBFIRST, address);
-        shiftOut(din, clk, MSBFIRST, *values);
-        values++;
+    if (inverted) {
+        do {
+            len--;
+            shiftOut(din, clk, MSBFIRST, address);
+            shiftOut(din, clk, LSBFIRST, values[len]);
+        } while(len);
+    } else {
+        while(len--) {
+            shiftOut(din, clk, MSBFIRST, address);
+            shiftOut(din, clk, MSBFIRST, *values);
+            values++;
+        }
     }
+
     digitalWrite(cs, HIGH);
     digitalWrite(cs, LOW);
 }
@@ -72,9 +81,16 @@ void LedMatrix::clear() {
 
 void LedMatrix::flush() {
     byte *ptr = matrix;
-    for(byte y=1; y<=8; y++) {
-        sendData(y, ptr, width);
-        ptr += width;
+    if (inverted) {
+        for(byte y=8; y>=1; y--) {
+            sendData(y, ptr, width);
+            ptr += width;
+        }
+    } else {
+        for(byte y=1; y<=8; y++) {
+            sendData(y, ptr, width);
+            ptr += width;
+        }
     }
 }
 

@@ -7,6 +7,8 @@
 
 class LedMatrix {
 public:
+    bool inverted = false;
+
     LedMatrix(byte _width, byte _clk, byte _cs, byte _din, byte intensity = 2);
 
     void setup(byte intensity = 2);
