@@ -17,8 +17,13 @@ typedef struct _TimeStruct {
 extern const char * const shortDays[] PROGMEM;
 extern const char * const shortMonthes[] PROGMEM;
 
+// last day of given month, including lap year
 byte lastDayOfMonth(byte month, byte year);
 
+// convert UTC time to France local time with DST
 void toLocal(TimeStruct *time);
+
+// add 1 second to time struct, cascading to minutes, ... year if needed
+void incrementSecond(TimeStruct *time);
 
 #endif

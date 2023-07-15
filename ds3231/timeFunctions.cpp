@@ -30,7 +30,7 @@ const char shortMonth4 [] PROGMEM = "avr";
 const char shortMonth5 [] PROGMEM = "mai";
 const char shortMonth6 [] PROGMEM = "juin";
 const char shortMonth7 [] PROGMEM = "juil";
-const char shortMonth8 [] PROGMEM = "aout";
+const char shortMonth8 [] PROGMEM = "aou";
 const char shortMonth9 [] PROGMEM = "sep";
 const char shortMonth10[] PROGMEM = "oct";
 const char shortMonth11[] PROGMEM = "nov";
@@ -112,4 +112,39 @@ void toLocal(TimeStruct *time) {
         time->hours -= 24;
         nextDay(time);
     }
+}
+
+void incrementSecond(TimeStruct *time) {
+    if (time->seconds < 59) {
+        time->seconds++;
+        return;
+    }
+    time->seconds=0;
+    if (time->minutes < 59) {
+        time->minutes++;
+        return;
+    }
+    time->minutes=0;
+    if (time->hours < 23) {
+        time->hours++;
+        return;
+    }
+    time->hours=0;
+    if (time->dayOfWeek==7) {
+        time->dayOfWeek=1;
+    } else {
+        time->dayOfWeek++;
+    }
+    byte lastDay = lastDayOfMonth(time->month, time->year);
+    if (time->dayOfMonth<lastDay) {
+        time->dayOfMonth++;
+        return;
+    }
+    time->dayOfMonth=1;
+    if (time->month<12) {
+        time->month++;
+        return;
+    }
+    time->month=1;
+    time->year++;
 }
