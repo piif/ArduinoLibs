@@ -2,7 +2,15 @@
 #include "ledMatrix.h"
 #include "font8.h"
 
-LedMatrix::LedMatrix(byte _width, byte _clk, byte _cs, byte _din, byte intensity = 2) {
+LedMatrix::LedMatrix() {
+    // caller must call setup after instanciation
+}
+
+LedMatrix::LedMatrix(byte _width, byte _clk, byte _cs, byte _din, byte intensity) {
+    setup(_width, _clk, _cs, _din, intensity);
+}
+
+void LedMatrix::setup(byte _width, byte _clk, byte _cs, byte _din, byte intensity) {
     width = _width;
     clk = _clk;
     cs = _cs;
@@ -10,10 +18,6 @@ LedMatrix::LedMatrix(byte _width, byte _clk, byte _cs, byte _din, byte intensity
 
     matrix = new byte[8 * width];
 
-    setup(intensity);
-}
-
-void LedMatrix::setup(byte intensity = 2) {
     pinMode(clk, OUTPUT);
     pinMode(cs , OUTPUT);
     pinMode(din, OUTPUT);
@@ -29,7 +33,7 @@ void LedMatrix::setup(byte intensity = 2) {
     sendCommand(0xC, 1, width); // clear shutdown 
 }
 
-void LedMatrix::sendCommand(byte address, byte value, byte iterations = 1) {
+void LedMatrix::sendCommand(byte address, byte value, byte iterations) {
 #ifdef HAVE_SERIAL
     Serial.print(address, HEX); Serial.print(' '); Serial.println(value, BIN);
 #endif
@@ -113,11 +117,11 @@ int LedMatrix::drawChar(int X, char c) {
     return ::drawChar(matrix, width, X, c);
 }
 
-int LedMatrix::drawString(int X, char *str) {
+int LedMatrix::drawString(int X, const char * str) {
     return ::drawString(matrix, width, X, str);
 }
 int LedMatrix::drawString_P(int X, const char * const str) {
-    char *ptr = str;
+    const char *ptr = str;
     while(char c = pgm_read_byte(ptr++)) {
         X = ::drawChar(matrix, width, X, c);
     }

@@ -5,8 +5,6 @@
 
 #include <font8.h>
 
-#define THIN_FONT
-
 #ifdef THIN_FONT
 #include <font8thin.h>
 #else
@@ -25,7 +23,7 @@ byte charWidth(char c) {
     if (c == 0x20) {
         return SPACE_WIDTH;
     }
-    if (c < 0x30 || (c >= 0x40 && c < 0x60) || c > 0x7F) {
+    if (c < 0x30 || (c >= 0x40 && c < 0x60)) {
         return 0;
     }
 #else
@@ -51,7 +49,7 @@ int drawChar(byte *matrix, byte width, int X, char c) {
 #endif 
     byte lineOffset = X / 8;
     if (lineOffset >= width) {
-        return;
+        return X;
     }
     byte bitOffset = X & 7;
     // don't overlap if it's over the last matrix
@@ -63,7 +61,7 @@ int drawChar(byte *matrix, byte width, int X, char c) {
     }
 
     byte *ptr = matrix + lineOffset;
-    byte *fontChar = font + (CHAR_POS(c) * 9);
+    const byte *fontChar = font + (CHAR_POS(c) * 9);
     for(byte y=0; y<8; y++) {
         byte map = pgm_read_byte_near(fontChar + y);
         ptr[0] |= map >> bitOffset;
@@ -75,7 +73,7 @@ int drawChar(byte *matrix, byte width, int X, char c) {
     return newX;
 }
 
-int drawString(byte *matrix, byte width, int X, char *str) {
+int drawString(byte *matrix, byte width, int X, const char *str) {
     for(;;) {
         if (!*str) {
             return X;

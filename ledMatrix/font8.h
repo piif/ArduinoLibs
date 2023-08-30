@@ -11,6 +11,6 @@ byte charWidth(char c);
 // return next X position (Depends on character width)
 int drawChar(byte *matrix, byte width, int X, char c);
 
-int drawString(byte *matrix, byte width, int X, char *str);
+int drawString(byte *matrix, byte width, int X, const char *str);
 
 #endif

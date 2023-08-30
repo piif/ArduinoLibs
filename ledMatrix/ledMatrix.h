@@ -16,9 +16,10 @@ class LedMatrix {
 public:
     bool inverted = false;
 
+    LedMatrix();
     LedMatrix(byte _width, byte _clk, byte _cs, byte _din, byte intensity = 2);
 
-    void setup(byte intensity = 2);
+    void setup(byte _width, byte _clk, byte _cs, byte _din, byte intensity = 2);
 
     void sendCommand(byte address, byte value, byte iterations = 1);
 
@@ -34,7 +35,7 @@ public:
     byte stringWidth(char *str);
 
     int drawChar(int X, char c);
-    int drawString(int X, char *str);
+    int drawString(int X, const char * str);
     int drawString_P(int X, const char * const str);
     void drawPixel(int X, int Y, bool value);
 
