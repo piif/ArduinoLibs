@@ -5,6 +5,13 @@
 
 // test MAX7219 chained led matrix 8x8xN
 
+#ifdef ARROWS_MAP
+#define ARROW_UP    '{'
+#define ARROW_DOWN  '|'
+#define ARROW_LEFT  '}'
+#define ARROW_RIGHT '~'
+#endif
+
 class LedMatrix {
 public:
     bool inverted = false;

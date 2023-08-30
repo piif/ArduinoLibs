@@ -1,5 +1,5 @@
-// arduino tools chain includes eveything ...
-// => force include only from inside font7.cpp
+// arduino tools chain includes everything ...
+// => force include only from inside font8.cpp
 #ifdef FONT8_CPP
 #define SPACE_WIDTH 2
 
@@ -166,7 +166,7 @@ const byte font [] PROGMEM = {
     0b00000000,
     0b00000000,
     6,
-#endif
+#endif // REDUCED_MAP
     0b01110000, //0 (Char 0x30)
     0b10001000,
     0b10011000,
@@ -647,7 +647,7 @@ const byte font [] PROGMEM = {
     0b11111000,
     0b00000000,
     6,
-#endif
+#endif // REDUCED_MAP
     0b10000000, //` (Char 0x60)
     0b01000000,
     0b00100000,
@@ -918,6 +918,48 @@ const byte font [] PROGMEM = {
     0b00000000,
     6,
 
+#ifdef ARROWS_MAP
+    0b00000000, // arrow UP
+    0b00100000,
+    0b01110000,
+    0b10101000,
+    0b00100000,
+    0b00100000,
+    0b00100000,
+    0b00000000,
+    6,
+
+    0b00000000, // arrow DOWN
+    0b00100000,
+    0b00100000,
+    0b00100000,
+    0b10101000,
+    0b01110000,
+    0b00100000,
+    0b00000000,
+    6,
+
+    0b00000000, // arrow LEFT
+    0b00100000,
+    0b01000000,
+    0b11111100,
+    0b01000000,
+    0b00100000,
+    0b00000000,
+    0b00000000,
+    7,
+
+    0b00000000, // arrow RIGHT
+    0b00010000,
+    0b00001000,
+    0b11111100,
+    0b00001000,
+    0b00010000,
+    0b00000000,
+    0b00000000,
+    7,
+
+#else
     0b00100000, //{
     0b01000000,
     0b01000000,
@@ -957,7 +999,7 @@ const byte font [] PROGMEM = {
     0b00000000,
     0b00000000,
     6,
-
+#endif // ARROWS_MAP
     0b01100000, //° (Char 0x7F)
     0b10010000,
     0b10010000,
