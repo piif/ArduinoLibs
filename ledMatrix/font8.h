@@ -13,4 +13,6 @@ int drawChar(byte *matrix, byte width, int X, char c);
 
 int drawString(byte *matrix, byte width, int X, const char *str);
 
+void drawStringRight(byte *matrix, byte width, const char *str);
+
 #endif

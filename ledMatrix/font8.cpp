@@ -85,3 +85,25 @@ int drawString(byte *matrix, byte width, int X, const char *str) {
         str++;
     }
 }
+
+void drawStringRight(byte *matrix, byte width, const char *str) {
+    if (!*str) {
+        return;
+    }
+
+    const char *ptr = str;
+    // seek to last char
+    while(*ptr++);
+    ptr--;
+
+    int x = width * 8 - 1;
+    while(ptr >= str) { // go back until start of string
+        byte w = charWidth(*ptr);
+        if (x < w) {
+            break;
+        }
+        drawChar(matrix, width, x - w, *ptr);
+        x -= w;
+        ptr--;
+    }
+}

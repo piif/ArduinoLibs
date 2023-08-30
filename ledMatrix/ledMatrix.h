@@ -38,6 +38,7 @@ public:
     int drawString(int X, const char * str);
     int drawString_P(int X, const char * const str);
     void drawPixel(int X, int Y, bool value);
+    void drawStringRight(const char *str);
 
     void dumpMatrix(Stream &stream);
 
