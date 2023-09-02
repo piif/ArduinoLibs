@@ -128,10 +128,6 @@ int LedMatrix::drawString_P(int X, const char * const str) {
     return X;
 }
 
-void LedMatrix::drawStringRight(const char *str) {
-    ::drawStringRight(matrix, width, str);
-}
-
 void LedMatrix::drawPixel(int X, int Y, bool value) {
     byte lineOffset = X / 8;
     if (lineOffset >= width || Y > 7) {
@@ -144,6 +140,17 @@ void LedMatrix::drawPixel(int X, int Y, bool value) {
     } else {
         *ptr &= ~(0x80 >> bitOffset);
     }
+}
+
+void LedMatrix::drawStringRight(const char *str) {
+    ::drawStringRight(matrix, width, str);
+}
+
+void LedMatrix::drawVChar(int Y, char c) {
+    ::drawVChar(matrix, width, Y, c);
+}
+void LedMatrix::drawVString(int Y, const char *str) {
+    ::drawVString(matrix, width, Y, str);
 }
 
 void LedMatrix::dumpMatrix(Stream &stream) {

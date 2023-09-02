@@ -1,12 +1,18 @@
 // arduino tools chain includes eveything ...
-// => force include only from inside font7.cpp
+// => force include only from inside font8.cpp
 #ifdef FONT8_CPP
+
 #define SPACE_WIDTH 1
+
+#ifdef REDUCED_MAP
+    #define CHAR_POS(c) ( ((c) == 20) ? 0 : ( ((c) >= 0x60) ? ((c) - 0x4F) : ((c) - 0x2F) )  )
+#else
+    #define CHAR_POS(c) ((c) - 0x20) 
+#endif
 
 // Numeric Font Matrix (Arranged as 8x font data + 1x kerning data)
 // ascii chars from 0x20 (space) to 0x7F (°)
 const byte font [] PROGMEM = {
-#ifndef REDUCED_MAP
     0b00000000, //Space (Char 0x20)
     0b00000000,
     0b00000000,
@@ -17,6 +23,7 @@ const byte font [] PROGMEM = {
     0b00000000,
     SPACE_WIDTH,
 
+#ifndef REDUCED_MAP
     0b10000000, //!
     0b10000000,
     0b10000000,
@@ -959,6 +966,16 @@ const byte font [] PROGMEM = {
     0b00000000,
     7,
 
+    0b00000000, //° (Char 0x7F)
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b10000001,
+    0b11111111,
+    8,
+
 #else
     0b00100000, //{
     0b01000000,
@@ -999,7 +1016,6 @@ const byte font [] PROGMEM = {
     0b00000000,
     0b00000000,
     6,
-#endif // ARROWS_MAP
 
     0b01100000, //° (Char 0x7F)
     0b10010000,
@@ -1010,5 +1026,20 @@ const byte font [] PROGMEM = {
     0b00000000,
     0b00000000,
     5
+#endif // ARROWS_MAP
 };
+
+const byte *getCharMap(char c) {
+#ifdef REDUCED_MAP
+    if (c < 0x30 || (c >= 0x40 && c < 0x60)) {
+        return NULL;
+    }
+#else
+    if (c < 0x20 || c > 0x7F) {
+        return NULL;
+    }
+#endif
+    return font + (CHAR_POS(c) * 9);
+}
+
 #endif

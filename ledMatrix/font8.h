@@ -15,4 +15,9 @@ int drawString(byte *matrix, byte width, int X, const char *str);
 
 void drawStringRight(byte *matrix, byte width, const char *str);
 
+// Draw vertical char from position Y (0=top)
+void drawVChar(byte *matrix, byte height, int Y, char c);
+// Draw vertical string from position Y (0=top), descending
+void drawVString(byte *matrix, byte height, int Y, const char *str);
+
 #endif
