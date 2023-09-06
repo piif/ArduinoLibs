@@ -61,28 +61,64 @@ byte lastDayOfMonth(byte month, byte year) {
     }
 }
 
-void nextDay(TimeStruct *time) {
+// returns :
+// 4 if day only changed
+// 5 if month changed
+// 6 if year changed
+byte nextDay(TimeStruct *time) {
     if (time->dayOfWeek == 7) {
         time->dayOfWeek = 1;
     } else {
         time->dayOfWeek++;
     }
-    byte last = lastDayOfMonth(time->dayOfMonth, time->year);
+    byte last = lastDayOfMonth(time->month, time->year);
     if (time->dayOfMonth == last) {
         time->dayOfMonth = 1;
         if (time->month == 12) {
             time->year++;
             time->month = 1;
+            return 3;
         } else  {
             time->month++;
+            return 2;
         }
     } else {
         time->dayOfMonth++;
+        return 1;
     }
 }
 
-void toLocal(TimeStruct *time) {
-    byte offset = 1;
+// returns :
+// 4 if day only changed
+// 5 if month changed
+// 6 if year changed
+byte prevDay(TimeStruct *time) {
+    if (time->dayOfWeek == 1) {
+        time->dayOfWeek = 7;
+    } else {
+        time->dayOfWeek--;
+    }
+
+    if (time->dayOfMonth != 1) {
+        time->dayOfMonth--;
+        return 1;
+    } else {
+        // first day of month -> compute prev month , then deduce last day of month
+        if (time->month == 1) {
+            time->month = 12;
+            time->year--;
+            time->dayOfMonth = lastDayOfMonth(time->month, time->year);
+            return 3;
+        } else {
+            time->month--;
+            time->dayOfMonth = lastDayOfMonth(time->month, time->year);
+            return 2;
+        }
+    }
+}
+
+// return +1 or +2 according to Paris timezone DST
+byte getOffset(TimeStruct *time) {
     byte dayOfWeek = time->dayOfWeek % 7; // convert to 0(sunday)-6(saturday) value
     if (
         ( time->month > 3 && time->month < 10 ) // from april to september
@@ -105,46 +141,65 @@ void toLocal(TimeStruct *time) {
             ( time->dayOfMonth >= 25 && dayOfWeek == 0 )
         )
     ) {
-        offset++;
+        return 2;
     }
+    return 1;
+}
+
+// returns :
+// 3 if hours changed
+// 4 if day only changed
+// 5 if month changed
+// 6 if year changed
+byte toLocal(TimeStruct *time) {
+    byte offset = getOffset(time);
+
     time->hours += offset;
     if (time->hours > 23) {
         time->hours -= 24;
-        nextDay(time);
+        return 1+nextDay(time);
+    }
+    return 1;
+}
+
+// returns :
+// 3 if hours changed
+// 4 if day only changed
+// 5 if month changed
+// 6 if year changed
+byte fromLocal(TimeStruct *time) {
+    byte offset = getOffset(time);
+    if (time->hours >= offset) {
+        time->hours -= offset;
+        return 1;
+    } else {
+        time->hours += 24-offset;
+        return 1+prevDay(time);
     }
 }
 
-void incrementSecond(TimeStruct *time) {
+// returns :
+// 1 if seconds only changed
+// 2 if minutes changed
+// 3 if hours changed
+// 4 if day only changed
+// 5 if month changed
+// 6 if year changed
+byte incrementSecond(TimeStruct *time) {
     if (time->seconds < 59) {
         time->seconds++;
-        return;
+        return 1;
     }
     time->seconds=0;
     if (time->minutes < 59) {
         time->minutes++;
-        return;
+        return 2;
     }
     time->minutes=0;
     if (time->hours < 23) {
         time->hours++;
-        return;
+        return 3;
     }
     time->hours=0;
-    if (time->dayOfWeek==7) {
-        time->dayOfWeek=1;
-    } else {
-        time->dayOfWeek++;
-    }
-    byte lastDay = lastDayOfMonth(time->month, time->year);
-    if (time->dayOfMonth<lastDay) {
-        time->dayOfMonth++;
-        return;
-    }
-    time->dayOfMonth=1;
-    if (time->month<12) {
-        time->month++;
-        return;
-    }
-    time->month=1;
-    time->year++;
+    return 3 + nextDay(time);
 }

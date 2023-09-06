@@ -21,9 +21,11 @@ extern const char * const shortMonthes[] PROGMEM;
 byte lastDayOfMonth(byte month, byte year);
 
 // convert UTC time to France local time with DST
-void toLocal(TimeStruct *time);
+byte toLocal(TimeStruct *time);
+// France DST to UTC
+byte fromLocal(TimeStruct *time);
 
 // add 1 second to time struct, cascading to minutes, ... year if needed
-void incrementSecond(TimeStruct *time);
+byte incrementSecond(TimeStruct *time);
 
 #endif
